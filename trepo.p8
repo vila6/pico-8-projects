@@ -73,8 +73,8 @@ end
 --player
 p =
 {
-		x0 = 64.0,
-		y0 = 30.0,
+		x0 = 0.0,
+		y0 = 0.0,
 		x1 = 0.0,
 		y1 = 0.0,
 		x2 = 0.0,
@@ -172,22 +172,22 @@ function cam_tick(tx, ty)
 end
 -->8
 --level
-
+numgrabeables=1000
 grabables={}
 winpoint={0,0}
 
 function generatelevel()
 		x=0
-		y=64
+		y=0
 		r=6
 		
-		for i=0,300 do
+		for i=0,numgrabeables do
 				add(grabables,{x,y,r})
 				x+=rnd(40)-15
 				y+=rnd(20)-8
 				r=rnd(12)+3
 		end
-		winpoint = {x,y}
+		winpoint = {grabables[#grabables-1][1],grabables[#grabables-1][2]}
 end
 
 function drawlevel()
@@ -197,7 +197,7 @@ function drawlevel()
 		for i=1,#grabables do
 				circfill(grabables[i][1],grabables[i][2],grabables[i][3]-1,5)
 		end
-		circfill(winpoint[1],winpoint[2],8,10)
+		circfill(winpoint[1],winpoint[2],grabables[#grabables-1][3],10)
 				
 end
 __gfx__
