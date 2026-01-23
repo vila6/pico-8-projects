@@ -15,11 +15,8 @@ gameover=false
 function _update60()
 		read_input()
 		cam_tick(p.x0, p.y0)
-		if false then--mget(p.x0/8,p.y0/8)==2 then
-			gameover = true
-			return
-		end
-		if btnp(🅾️) then
+
+		if btnp(🅾️) and cangrab(p.x2,p.y2) then
 				l = not l
 				aux.x0 = p.x0
 				aux.y0 = p.y0
@@ -61,6 +58,15 @@ function _draw()
 		
 		if gameover then
 				print("game over",cam.x+64,cam.y+64)
+		end
+end
+
+function cangrab(px, py)
+
+		for i=1,#grabables do
+				if are_closer_than(grabables[i][3],grabables[i][1],grabables[i][2],px,py) then
+					return true
+				end
 		end
 end
 -->8
@@ -141,6 +147,14 @@ end
 --helpers
 function lerp(a,b,t)
   return a+(b-a)*t
+end
+
+function are_closer_than(d, x1,y1, x2,y2)
+  local dx = abs(x2-x1)
+  local dy = abs(y2-y1)
+  return dx < d 
+     and dy < d 
+     and (dx^2 + dy^2) < d^2
 end
 -->8
 --camera
