@@ -11,13 +11,25 @@ player={ax=64, ay=64}
 aux={x0=0.0,y0=0.0,x2=0.0,y2=0.0,a1=0.0,a2=0.0}
 l=true
 gameover=false
+t=""
 
 function _update60()
 		read_input()
-		p.a1_a+=input.x
-		cam_tick(p.x0, p.y0)
+		
+		if gameover then
+				p.y0+=2
+				p.y1+=2
+				p.y2+=2
+				return
+		end
 
-		if btnp(🅾️) and cangrab(p.x2,p.y2) then
+		cam_tick(p.x0, p.y0)
+		if btnp(🅾️) then
+				if not cangrab(p.x2,p.y2) then
+						gameover = true
+						return
+				end
+				
 				l = not l
 				aux.x0 = p.x0
 				aux.y0 = p.y0
@@ -43,13 +55,14 @@ function _update60()
 
 		end
 		
+		t = formated_time()
 		p.tick()
 end
 
 function _draw()
 		cls(12)
 		drawlevel()
-		print(formated_time(),cam.x,cam.y)
+		print(t,cam.x,cam.y)
 	 line(p.x1,p.y1,p.x0,p.y0,1)
 	 line(p.x1,p.y1,p.x2,p.y2,1)
 		circfill(p.x0,p.y0,2,l and 8 or 9)
@@ -63,9 +76,8 @@ function _draw()
 end
 
 function cangrab(px, py)
-
 		for i=1,#grabables do
-				if are_closer_than(grabables[i][3],grabables[i][1],grabables[i][2],px,py) then
+				if are_closer_than(grabables[i][3]+2,grabables[i][1],grabables[i][2],px,py) then
 					return true
 				end
 		end
@@ -162,7 +174,8 @@ function formated_time()
 	t = time()
 	s = flr(t%60)
 	m = flr(t/60)
-	return tostr(m)..":"..tostr(s)
+	return tostr(m)..":"..(s<10 and "0" or "")
+	..tostr(s)
 end
 -->8
 --camera
