@@ -110,21 +110,11 @@ end
 
 function calculate_perps()
    for i=1,5 do
-				if i < 5 then
-				 local uwu = v_perp(v_dir(rope[i],rope[i+1]))
-					uwu = v_scale(uwu,i*2)
-					local nuwu = v_sub(rope[i], uwu)
-					uwu = v_add(rope[i], uwu)
-					lefts[i] = nuwu
-				 rights[i] = uwu
-				else
-					local uwu = v_perp(v_dir(rope[i],rope[i-1]))
-					uwu = v_scale(uwu,i*2)
-					local nuwu = v_sub(rope[i], uwu)
-					uwu = v_add(rope[i], uwu)
-					lefts[i] = uwu
-				 rights[i] = nuwu
-				end
+	   	local j = i < 5 and i+1 or i-1
+					local uwu = v_perp(v_dir(rope[i],rope[j]))
+					local nuwu = v_neg(uwu)
+					lefts[i] = i<5 and nuwu or uwu
+				 rights[i] = i<5 and uwu or nuwu
 			end
 end
 function _draw()
@@ -154,9 +144,15 @@ function _draw()
 			local l = lefts[i+1]
 			local rt = rights[i]
 			local lt = lefts[i]
-			line(r.x,r.y,rt.x,rt.y, c)
-			line(l.x,l.y,lt.x,lt.y, c)
 			
+			for j=0,i*3 do
+			 local pr = v_add(a,v_scale(r,j))
+			 local pl = v_add(a,v_scale(l,j))
+			 local prt = v_add(b,v_scale(rt,j*1.5))
+			 local plt = v_add(b,v_scale(lt,j*1.5))
+				line(pr.x,pr.y,prt.x,prt.y, i)
+				line(pl.x,pl.y,plt.x,plt.y,i)
+			end
 	end
 	 circ(rope[5].x, rope[5].y, widths[5]*2, c)
 		circfill(a.x, a.y, widths[i], c)
