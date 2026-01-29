@@ -68,7 +68,7 @@ local goal
 local moved = false
 
 function _init()
-	for i=1,5 do
+	for i=1,10 do
 		add(rope, v_add(
 			v_center,
 			vector(-(i-3)*segdist,0)))
@@ -109,14 +109,15 @@ function _update60()
 end
 
 function calculate_perps()
-   for i=1,5 do
-	   	local j = i < 5 and i+1 or i-1
+   for i=1,#rope do
+	   	local j = i < #rope and i+1 or i-1
 					local uwu = v_perp(v_dir(rope[i],rope[j]))
 					local nuwu = v_neg(uwu)
-					lefts[i] = i<5 and nuwu or uwu
-				 rights[i] = i<5 and uwu or nuwu
+					lefts[i] = i<#rope and nuwu or uwu
+				 rights[i] = i<#rope and uwu or nuwu
 			end
 end
+
 function _draw()
 	cls()
 	
@@ -135,36 +136,54 @@ function _draw()
 	line(c.x, c.y, b.x, b.y, 6)
 	
 	for i,a in ipairs(rope) do
-		local c = i==1 and 11 or 7
 		local b = rope[i+1]
 		
 		if b then
-			line(a.x, a.y, b.x, b.y, c)
-			local r = rights[i+1]
-			local l = lefts[i+1]
-			local rt = rights[i]
-			local lt = lefts[i]
-			
-			for j=0,i*3 do
-			 local pr = v_add(a,v_scale(r,j))
-			 local pl = v_add(a,v_scale(l,j))
-			 local prt = v_add(b,v_scale(rt,j*1.5))
-			 local plt = v_add(b,v_scale(lt,j*1.5))
-				line(pr.x,pr.y,prt.x,prt.y, i)
-				line(pl.x,pl.y,plt.x,plt.y,i)
-			end
+			drawplayer(7,2)
+			drawplayer(8,0)
+		 --circ(rope[#rope].x, rope[#rope].y, [#rope]*2, c)
+			--circfill(a.x, a.y, widths[i], c)
+		end
 	end
-	 circ(rope[5].x, rope[5].y, widths[5]*2, c)
-		circfill(a.x, a.y, widths[i], c)
-	end
-	
 	local a =
-		flr(v_angle(d)%1*360).." deg"
-	
+	flr(v_angle(d)%1*360).." deg"
+
 	?"press ⬆️⬇️⬅️➡️", 5
 	if moved then
 		?"angle of center line: "..a
+	
 	end
+end
+
+function drawplayer(c, w)
+	for i,a in ipairs(rope) do
+		local b = rope[i+1]
+		
+		if b then
+			thiccline(a.x, a.y, b.x, b.y,widths[i]+w,widths[i]+w,c)
+		end
+	end
+end
+-->8
+function thiccline(_x1,_y1,_x2,_y2,_r1,_r2,_c)
+ local _xd=_x2-_x1
+ local _yd=_y2-_y1
+ 
+ if abs(_xd)>abs(_yd) then
+  for _x=_x1,_x2,sgn(_xd) do
+   local _t=(_x-_x1)/(_x2-_x1)
+   local _y=_y1+(_y2-_y1)*_t
+   local _r=_r1+(_r2-_r1)*_t-rnd()
+   circfill(_x,_y,_r,_c)
+  end
+ else
+  for _y=_y1,_y2,sgn(_yd) do
+   local _t=(_y-_y1)/(_y2-_y1)
+   local _x=_x1+(_x2-_x1)*_t
+   local _r=_r1+(_r2-_r1)*_t-rnd()
+   circfill(_x,_y,_r,_c)
+  end
+ end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
