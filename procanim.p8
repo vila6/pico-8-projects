@@ -59,20 +59,21 @@ v_center = vector(64,64)
 -->8
 -- small demo
 
-local segdist = 10
+local segdist = 40
+local numparts = 4
+local mmw={x=3.0,y=10.0} --min/max width
 local rope = {}
-local widths = {}
+local widths= {}-- = {10,4,5,4,18,15,15,15,13}
 local rights = {}
 local lefts = {}
 local goal
 local moved = false
-
 function _init()
-	for i=1,10 do
+	for i=1,numparts do
 		add(rope, v_add(
 			v_center,
 			vector(-(i-3)*segdist,0)))
-			add(widths, i)
+			add(widths, mmw.x+flr(rnd(mmw.y)))
 	end
 	goal = v_copy(rope[1])
 end
@@ -140,7 +141,7 @@ function _draw()
 		
 		if b then
 			drawplayer(7,2)
-			drawplayer(8,0)
+		 drawplayer(8,0)
 		 --circ(rope[#rope].x, rope[#rope].y, [#rope]*2, c)
 			--circfill(a.x, a.y, widths[i], c)
 		end
@@ -160,7 +161,7 @@ function drawplayer(c, w)
 		local b = rope[i+1]
 		
 		if b then
-			thiccline(a.x, a.y, b.x, b.y,widths[i]+w,widths[i]+w,c)
+			thiccline(a.x, a.y, b.x, b.y,widths[i]+w,widths[i+1]+w,c)
 		end
 	end
 end
@@ -170,17 +171,17 @@ function thiccline(_x1,_y1,_x2,_y2,_r1,_r2,_c)
  local _yd=_y2-_y1
  
  if abs(_xd)>abs(_yd) then
-  for _x=_x1,_x2,sgn(_xd) do
+  for _x=flr(_x1),_x2,sgn(_xd) do
    local _t=(_x-_x1)/(_x2-_x1)
-   local _y=_y1+(_y2-_y1)*_t
-   local _r=_r1+(_r2-_r1)*_t-rnd()
+   local _y=flr(_y1+(_y2-_y1)*_t)
+   local _r=flr(_r1+(_r2-_r1)*_t)
    circfill(_x,_y,_r,_c)
   end
  else
-  for _y=_y1,_y2,sgn(_yd) do
+  for _y=flr(_y1),_y2,sgn(_yd) do
    local _t=(_y-_y1)/(_y2-_y1)
-   local _x=_x1+(_x2-_x1)*_t
-   local _r=_r1+(_r2-_r1)*_t-rnd()
+   local _x=flr(_x1+(_x2-_x1)*_t)
+   local _r=flr(_r1+(_r2-_r1)*_t)
    circfill(_x,_y,_r,_c)
   end
  end
