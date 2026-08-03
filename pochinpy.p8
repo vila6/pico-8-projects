@@ -10,8 +10,9 @@ function _init()
 				v={x=0,y=0},
 				d=5
 			}
+	cam={x=64,y=64}
 	enemies={}
-	add(enemies, make_enemy())
+	make_map()
 	g=0.1
 end
 
@@ -46,7 +47,7 @@ function _update60()
 		and abs(p.y-e.y)<=8 do
 			p.v.x=0
 			if p.v.y>0 do
-			 p.d+=3
+			 p.d+=2
 			 p.d=min(p.d, 10)
 			 p.v.y=-p.v.y/2
 			 del(enemies,e)
@@ -57,6 +58,10 @@ function _update60()
 	
 		p.x += p.v.x
 		p.y += p.v.y
+		
+		cam.x =0--+= (p.x-(cam.x+64))/9
+		cam.y += (p.y-(cam.y+64))/9
+		camera(cam.x,cam.y)
 end
 
 function _draw()
@@ -66,13 +71,14 @@ function _draw()
 		  draw_enemy(e)
 		end
 		for i=1,p.d do
-				circfill(i*5, 3, 2, 10)
+				circfill(cam.x+i*5, cam.y+3, 2, 10)
 		end
 end
 -->8
-function make_enemy()
+function make_enemy(offsety)
+		offsety = offsety or 0
 		e={x=rnd(128),
-					y=21+rnd(86),
+					y=21+rnd(86)+offsety,
 				}
 	 return e
 end
@@ -81,6 +87,12 @@ function draw_enemy(e)
   spr(2,e.x-8,e.y)
   spr(3,e.x,e.y)
   spr(2,e.x+8,e.y,1,1,true)
+end
+
+function make_map()
+  for i=1,100 do
+		add(enemies, make_enemy(-i*20))
+		end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
